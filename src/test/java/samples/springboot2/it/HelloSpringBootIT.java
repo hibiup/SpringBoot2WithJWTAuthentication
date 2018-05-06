@@ -40,4 +40,36 @@ public class HelloSpringBootIT {
                 Map.class);
         assertThat(response.getBody().get("Message").toString(), equalTo("Hello Spring Boot 2"));
     }
+
+    @Test
+    public void testGetToken() {
+        assert(requestToken() != null);
+    }
+
+    @Test
+    public void testGetUserWithToken() {
+        String token = requestToken();
+        ResponseEntity<Map> response = getUserWithToken(token);
+        assert(response.getBody().get("username").toString().equals("mockuser"));
+        assert(response.getBody().get("password").toString().equals(token));
+    }
+
+    protected String requestToken() {
+        ResponseEntity<String> response = template
+                .withBasicAuth("mockuser", "mockpass")
+                .getForEntity(URL_BASE + ":" + port + "/api/token", String.class);
+        return response.getBody().toString();
+    }
+
+    protected ResponseEntity<Map> getUserWithToken(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "JWT " + token);
+
+        ResponseEntity<Map> response = template
+                .exchange(URL_BASE + ":" + port + "/api/user",
+                        HttpMethod.GET,
+                        new HttpEntity(headers),
+                        Map.class);
+        return response;
+    }
 }
