@@ -79,6 +79,15 @@ public class ApplicationConfiguration {
     }
 
     @Configuration
+    @Order(3)
+    public class DefaultSecurityConfiguration extends WebSecurityConfigurerAdapter {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.authorizeRequests().antMatchers("/").permitAll();
+        }
+    }
+
+    @Configuration
     @Order(1)
     public class JWTConfiguration extends WebSecurityConfigurerAdapter {
         @Override

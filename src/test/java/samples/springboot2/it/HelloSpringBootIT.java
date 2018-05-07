@@ -34,7 +34,7 @@ public class HelloSpringBootIT {
         headers.add("Accept", "application/xml");
 
         ResponseEntity<Map> response = template.exchange(
-                URL_BASE + ":" + port,
+                URL_BASE + ":" + port + "/",
                 HttpMethod.GET,
                 new HttpEntity(headers),
                 Map.class);
